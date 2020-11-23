@@ -1,0 +1,94 @@
+﻿<UserControl x:Class="EstimationApp.EstimationScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:validation="clr-namespace:EstimationApp.Validation"
+             mc:Ignorable="d" 
+             MinHeight="350" MinWidth="650">
+    <UserControl.Resources>
+        <ControlTemplate x:Key="validationTemplate">
+            <DockPanel>
+                <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
+                <AdornedElementPlaceholder/>
+            </DockPanel>
+        </ControlTemplate>
+        <Style x:Key="textBoxInError" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+        Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                        Path=(Validation.Errors)/ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"></RowDefinition>
+            <RowDefinition Height="45"></RowDefinition>
+            <RowDefinition Height="45"></RowDefinition>
+            <RowDefinition Height="45"></RowDefinition>
+            <RowDefinition Height="45"></RowDefinition>
+            <RowDefinition Height="45"></RowDefinition>
+            <RowDefinition Height="45"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="10"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="10"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4" HorizontalAlignment="Right">
+            <Label.Style>
+                <Style TargetType="Label">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsPriviledgedUser}" Value="True">
+                            <Setter Property="Content" Value="Welcome: Priviledged User"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsPriviledgedUser}" Value="False">
+                            <Setter Property="Content" Value="Welcome: Normal User"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Label.Style>
+        </Label>
+
+        <Label Content="Gold Price(per gram)" Grid.Row="1" Grid.Column="1"></Label>
+        <TextBox Text="{Binding GoldPrice, UpdateSourceTrigger=PropertyChanged}"  Grid.Row="1" Grid.Column="3"></TextBox>
+        <Label Content="Weight(grams)" Grid.Row="2" Grid.Column="1"></Label>
+        <TextBox Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="3"></TextBox>
+
+        <Label Content="Total Price" Grid.Row="3" Grid.Column="1"></Label>
+        <TextBox Text="{Binding TotalPrice}" IsEnabled="False" Grid.Row="3" Grid.Column="3"></TextBox>
+
+        <StackPanel Visibility="{Binding IsPriviledgedUser, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="4" Grid.Column="3" Orientation="Horizontal">
+            <Label Content="Discount %"></Label>
+            <TextBox Width="35" VerticalContentAlignment="Center" Validation.ErrorTemplate="{StaticResource validationTemplate}"
+                     Style="{StaticResource textBoxInError}">
+                <TextBox.Text>
+                    <Binding Path="Discount" UpdateSourceTrigger="PropertyChanged" >
+                        <Binding.ValidationRules>
+                            <validation:DiscountPercentageRule Min="0" Max="100"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+        </StackPanel>
+
+        <Button Style="{StaticResource NormalButtonStyle}" Grid.Row="5" Grid.Column="1" Content="Calculate" Command="{Binding CalculateTotalCommand}"></Button>
+
+        <StackPanel Margin="5" Orientation="Horizontal" Grid.Column="3" Grid.Row="5">
+            <Button Margin="5,0,0,0" Style="{StaticResource PrintButtonStyle}" Content="Print To Screen" Command="{Binding PrintCommand}" CommandParameter="Screen"></Button>
+            <Button  Margin="5,0,0,0" Style="{StaticResource PrintButtonStyle}" Content="Print To File" Command="{Binding PrintCommand}" CommandParameter="File"></Button>
+            <Button  Margin="5,0,0,0" Style="{StaticResource PrintButtonStyle}" Content="Print To Paper" Command="{Binding PrintCommand}" CommandParameter="Paper"></Button>
+        </StackPanel>
+
+        <Button Grid.Row="6" Grid.Column="3" HorizontalAlignment="Right" Style="{StaticResource NormalButtonStyle}" Command="{Binding DataContext.CloseWindowCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Margin="0,0,5,0" Content="Close"></Button>
+
+    </Grid>
+
+</UserControl>

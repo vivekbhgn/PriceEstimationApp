@@ -1,0 +1,22 @@
+[
+  {
+    "UserName": "NormalUser",
+    "Password": "password",
+    "UserType": 0
+  },
+  {
+    "UserName": "PriviledgedUser",
+    "Password": "password",
+    "UserType": 1
+  },
+  {
+    "UserName": "1",
+    "Password": "1",
+    "UserType": 1
+  },
+  {
+    "UserName": "2",
+    "Password": "2",
+    "UserType": 0
+  }
+]
